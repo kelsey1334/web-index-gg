@@ -38,16 +38,26 @@
   </div>
 
   <script>
-    function startIndex(api, domain) {
-      let protocol = (location.protocol === 'https:') ? 'wss' : 'ws';
-      let ws = new WebSocket(`${protocol}://${location.host}/ws/${api}/${domain}`);
-      let logDiv = document.getElementById("log");
-      logDiv.innerHTML = "";
-      ws.onmessage = (event) => {
-        logDiv.innerHTML += event.data + "\n";
-        logDiv.scrollTop = logDiv.scrollHeight;
-      };
-    }
-  </script>
+  function startIndex(api, domain) {
+    let protocol = (location.protocol === 'https:') ? 'wss' : 'ws';
+    let ws = new WebSocket(`${protocol}://${location.host}/ws/${api}/${domain}`);
+    let logDiv = document.getElementById("log");
+    logDiv.innerHTML = "";
+
+    ws.onopen = () => {
+      logDiv.innerHTML += "🔗 WebSocket connected...\\n";
+    };
+    ws.onmessage = (event) => {
+      logDiv.innerHTML += event.data + "\\n";
+      logDiv.scrollTop = logDiv.scrollHeight;
+    };
+    ws.onerror = (event) => {
+      logDiv.innerHTML += "❌ WebSocket error!\\n";
+    };
+    ws.onclose = () => {
+      logDiv.innerHTML += "🔌 WebSocket closed.\\n";
+    };
+  }
+</script>
 </body>
 </html>
